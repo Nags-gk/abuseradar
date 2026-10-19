@@ -1,0 +1,1 @@
+{"threshold": 0.002423461570057586, "features": ["success", "unknown_user", "ip_attempts_1h", "ip_fail_1h", "ip_fail_ratio_1h", "asn_attempts_1h", "asn_fail_1h", "acct_fail_1h", "pw_accounts_6h", "asn_seen_before", "fp_seen_before", "prior_logins", "asn_hosting", "asn_mobile", "scripted_ua", "km_from_prev", "kmh_from_prev", "hour_utc"]}

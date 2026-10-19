@@ -1,0 +1,17 @@
+id: R007
+name: Device ID enumeration through the API
+attack: api_enumeration
+mitre: T1087 Account Discovery
+severity: medium
+entity: account_id
+description: One account requests many distinct device IDs in 10 minutes and most return 4xx, the signature of walking a sequential ID space.
+false_positives: A buggy client retry loop; distinct-ID floor of 50 keeps those out.
+response: Revoke the API token, rate-limit the account to 1 request/s, and switch device IDs to unguessable values.
+sql: |
+  SELECT account_id AS entity, time_bucket(INTERVAL 10 MINUTE, ts) AS window_start,
+         time_bucket(INTERVAL 10 MINUTE, ts) + INTERVAL 10 MINUTE AS window_end,
+         list(event_id) AS evidence, count(DISTINCT device_id)::DOUBLE AS metric,
+         printf('%d device IDs, %.0f%% 4xx', count(DISTINCT device_id), 100 * avg(CASE WHEN status >= 400 THEN 1 ELSE 0 END)) AS detail
+  FROM events WHERE event_type = 'api_call'
+  GROUP BY account_id, time_bucket(INTERVAL 10 MINUTE, ts)
+  HAVING count(DISTINCT device_id) >= 50 AND avg(CASE WHEN status >= 400 THEN 1.0 ELSE 0.0 END) >= 0.5

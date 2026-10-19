@@ -1,0 +1,14 @@
+duckdb==1.5.6
+pandas==3.0.5
+numpy==2.5.3
+pyarrow==26.0.0
+scikit-learn==1.9.1
+lightgbm==4.7.0
+networkx==3.7
+fastapi==0.150.0
+uvicorn==0.54.0
+pydantic==2.13.5
+pyyaml==6.0.3
+google-genai==2.31.0
+httpx==0.28.1
+pytest==9.1.1

@@ -1,0 +1,17 @@
+id: R006
+name: Cloned device identity
+attack: device_clone
+mitre: T1036 Masquerading
+severity: high
+entity: device_id
+description: One device serial checks in from two or more networks inside 6 h. Home devices check in from one fixed network.
+false_positives: A user moving house or an ISP renumbering their block.
+response: Rotate the device credential, quarantine check-ins from the new network, and ask the owner to re-pair.
+sql: |
+  SELECT device_id AS entity, time_bucket(INTERVAL 6 HOUR, ts) AS window_start,
+         time_bucket(INTERVAL 6 HOUR, ts) + INTERVAL 6 HOUR AS window_end,
+         list(event_id) AS evidence, count(DISTINCT asn)::DOUBLE AS metric,
+         printf('%d networks, %d check-ins', count(DISTINCT asn), count(*)) AS detail
+  FROM events WHERE event_type = 'device_checkin'
+  GROUP BY device_id, time_bucket(INTERVAL 6 HOUR, ts)
+  HAVING count(DISTINCT asn) >= 2

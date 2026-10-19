@@ -1,0 +1,17 @@
+[project]
+name = "abuseradar"
+version = "1.0.0"
+description = "Counter-abuse detection and response for a smart-home device cloud"
+requires-python = ">=3.11"
+
+[tool.setuptools]
+packages = ["abuseradar"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 140
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I"]
+ignore = ["E501", "E702", "E731"]

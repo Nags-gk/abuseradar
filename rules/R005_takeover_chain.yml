@@ -1,0 +1,24 @@
+id: R005
+name: Login from new network and device, then account manipulation
+attack: account_takeover
+mitre: T1098 Account Manipulation
+severity: critical
+entity: account_id
+description: A successful login from an ASN and device fingerprint the account has never used is followed within 2 h by an MFA, email or device-pairing change.
+false_positives: A user who buys a new phone while travelling and re-pairs a device the same day.
+response: Freeze the account, roll back the MFA and email changes, unpair the new device, and notify the user through the original email.
+sql: |
+  WITH l AS (
+    SELECT event_id, account_id, ts, asn, device_fp,
+           count(*) OVER (PARTITION BY account_id, asn ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS asn_seen,
+           count(*) OVER (PARTITION BY account_id, device_fp ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS fp_seen,
+           count(*) OVER (PARTITION BY account_id ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS prior
+    FROM events WHERE event_type = 'login' AND success),
+  c AS (SELECT event_id, account_id, ts, event_type FROM events
+        WHERE event_type IN ('mfa_change', 'email_change', 'device_pair'))
+  SELECT l.account_id AS entity, l.ts AS window_start, max(c.ts) AS window_end,
+         list_prepend(l.event_id, list(c.event_id)) AS evidence, count(*)::DOUBLE AS metric,
+         printf('new ASN %d + new device, then %s', l.asn, string_agg(DISTINCT c.event_type, ', ')) AS detail
+  FROM l JOIN c ON c.account_id = l.account_id AND c.ts BETWEEN l.ts AND l.ts + INTERVAL 2 HOUR
+  WHERE l.asn_seen = 0 AND l.fp_seen = 0 AND l.prior >= 3
+  GROUP BY l.account_id, l.ts, l.event_id, l.asn

@@ -1,0 +1,518 @@
+{
+  "campaigns": [
+    {
+      "label": "C01",
+      "attack": "credential_stuffing",
+      "variant": "burst",
+      "window": "train",
+      "events": 857,
+      "compromised": 19,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 12.0,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 12.0,
+      "rules": [
+        "R001",
+        "R002",
+        "R004",
+        "R005",
+        "R009"
+      ]
+    },
+    {
+      "label": "C02",
+      "attack": "password_spray",
+      "variant": "slow",
+      "window": "train",
+      "events": 1500,
+      "compromised": 0,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 14.1,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 14.1,
+      "rules": [
+        "R001",
+        "R002",
+        "R003"
+      ]
+    },
+    {
+      "label": "C03",
+      "attack": "account_takeover",
+      "variant": "phished",
+      "window": "train",
+      "events": 48,
+      "compromised": 12,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 42.2,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 42.2,
+      "rules": [
+        "R004",
+        "R005"
+      ]
+    },
+    {
+      "label": "C04",
+      "attack": "device_clone",
+      "variant": "cloned_serial",
+      "window": "train",
+      "events": 99,
+      "compromised": 8,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 324.6,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 324.6,
+      "rules": [
+        "R006"
+      ]
+    },
+    {
+      "label": "C05",
+      "attack": "api_enumeration",
+      "variant": "sequential_ids",
+      "window": "train",
+      "events": 2064,
+      "compromised": 0,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 9.6,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 9.6,
+      "rules": [
+        "R007"
+      ]
+    },
+    {
+      "label": "C06",
+      "attack": "fake_account_ring",
+      "variant": "shared_fingerprints",
+      "window": "train",
+      "events": 240,
+      "compromised": 0,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 1396.8,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": true,
+      "graph_minutes_to_detect": 208.5,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 208.5,
+      "rules": [
+        "G1",
+        "R008"
+      ]
+    },
+    {
+      "label": "C11",
+      "attack": "credential_stuffing",
+      "variant": "burst",
+      "window": "test",
+      "events": 984,
+      "compromised": 17,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 1.2,
+      "ml_detected": true,
+      "ml_minutes_to_detect": 20.7,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 1.2,
+      "rules": [
+        "ML1",
+        "R001",
+        "R002",
+        "R004",
+        "R005",
+        "R009"
+      ]
+    },
+    {
+      "label": "C12",
+      "attack": "credential_stuffing",
+      "variant": "evasive",
+      "window": "test",
+      "events": 702,
+      "compromised": 12,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 585.3,
+      "ml_detected": true,
+      "ml_minutes_to_detect": 41.3,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 41.3,
+      "rules": [
+        "ML1",
+        "R002",
+        "R004",
+        "R005"
+      ]
+    },
+    {
+      "label": "C13",
+      "attack": "password_spray",
+      "variant": "slow",
+      "window": "test",
+      "events": 1500,
+      "compromised": 0,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 22.7,
+      "ml_detected": true,
+      "ml_minutes_to_detect": 22.7,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 22.7,
+      "rules": [
+        "ML1",
+        "R001",
+        "R002",
+        "R003"
+      ]
+    },
+    {
+      "label": "C14",
+      "attack": "account_takeover",
+      "variant": "phished",
+      "window": "test",
+      "events": 60,
+      "compromised": 15,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 17.7,
+      "ml_detected": true,
+      "ml_minutes_to_detect": 32.3,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 17.7,
+      "rules": [
+        "ML1",
+        "R004",
+        "R005"
+      ]
+    },
+    {
+      "label": "C15",
+      "attack": "device_clone",
+      "variant": "cloned_serial",
+      "window": "test",
+      "events": 153,
+      "compromised": 10,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 237.8,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 237.8,
+      "rules": [
+        "R006"
+      ]
+    },
+    {
+      "label": "C16",
+      "attack": "api_enumeration",
+      "variant": "sequential_ids",
+      "window": "test",
+      "events": 2033,
+      "compromised": 0,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 5.8,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": false,
+      "graph_minutes_to_detect": null,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 5.8,
+      "rules": [
+        "R007"
+      ]
+    },
+    {
+      "label": "C17",
+      "attack": "fake_account_ring",
+      "variant": "shared_fingerprints",
+      "window": "test",
+      "events": 240,
+      "compromised": 0,
+      "rule_detected": true,
+      "rule_minutes_to_detect": 1303.6,
+      "ml_detected": false,
+      "ml_minutes_to_detect": null,
+      "graph_detected": true,
+      "graph_minutes_to_detect": 324.6,
+      "fused_detected": true,
+      "fused_minutes_to_detect": 324.6,
+      "rules": [
+        "G1",
+        "R008"
+      ]
+    }
+  ],
+  "summary": {
+    "test_campaigns": 7,
+    "test_campaigns_detected_fused": 7,
+    "test_campaigns_detected_rules_only": 7,
+    "median_minutes_to_detect": 22.7,
+    "compromised_accounts_test": 37,
+    "compromised_flagged_test": 37,
+    "median_minutes_compromise_to_alert": 0.0,
+    "alerts_test": 1670,
+    "alert_precision_test": 0.9778,
+    "incidents_test": 707,
+    "incident_precision_test": 0.9519,
+    "false_incidents_per_1k_accounts_day": 0.75,
+    "alert_to_incident_ratio": 2.4,
+    "pages_test": 479,
+    "page_precision_test": 0.9937,
+    "false_pages_per_1k_accounts_day": 0.066
+  },
+  "by_rule": [
+    {
+      "rule_id": "G1",
+      "alerts": 1,
+      "true_positive": 1,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "ML1",
+      "alerts": 1224,
+      "true_positive": 1202,
+      "precision": 0.982
+    },
+    {
+      "rule_id": "R001",
+      "alerts": 222,
+      "true_positive": 222,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R002",
+      "alerts": 22,
+      "true_positive": 22,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R003",
+      "alerts": 3,
+      "true_positive": 3,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R004",
+      "alerts": 30,
+      "true_positive": 15,
+      "precision": 0.5
+    },
+    {
+      "rule_id": "R005",
+      "alerts": 43,
+      "true_positive": 43,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R006",
+      "alerts": 105,
+      "true_positive": 105,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R007",
+      "alerts": 6,
+      "true_positive": 6,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R008",
+      "alerts": 13,
+      "true_positive": 13,
+      "precision": 1.0
+    },
+    {
+      "rule_id": "R009",
+      "alerts": 1,
+      "true_positive": 1,
+      "precision": 1.0
+    }
+  ],
+  "model": {
+    "train_logins": 47731,
+    "test_logins": 55603,
+    "test_attack_logins": 3114,
+    "threshold": 0.00242,
+    "lightgbm": {
+      "pr_auc": 0.9956,
+      "precision": 0.9925,
+      "recall": 0.9374,
+      "tp": 2919,
+      "fp": 22,
+      "fn": 195
+    },
+    "isolation_forest": {
+      "pr_auc": 0.8458
+    },
+    "per_attack_recall": {
+      "account_takeover": 0.6,
+      "credential_stuffing": 0.8818,
+      "password_spray": 1.0
+    },
+    "per_campaign_recall": {
+      "C11": 1.0,
+      "C12": 0.7162,
+      "C13": 1.0,
+      "C14": 0.6
+    },
+    "feature_importance": {
+      "ip_fail_1h": 0.3423,
+      "ip_fail_ratio_1h": 0.2483,
+      "pw_accounts_6h": 0.1575,
+      "success": 0.0622,
+      "asn_fail_1h": 0.0537,
+      "asn_hosting": 0.0531,
+      "fp_seen_before": 0.0443,
+      "scripted_ua": 0.0111
+    }
+  },
+  "graph": {
+    "components": 114,
+    "largest": 120,
+    "singleton_share": 0.9825,
+    "rings": 2
+  },
+  "dataset": {
+    "events": 1394470,
+    "accounts": 4000,
+    "days": 21,
+    "attack_events": 10480,
+    "campaigns": 13,
+    "event_types": {
+      "device_checkin": 1008882,
+      "api_call": 281012,
+      "login": 103334,
+      "signup": 352,
+      "device_pair": 330,
+      "mfa_change": 245,
+      "referral_claim": 240,
+      "email_change": 75
+    }
+  },
+  "timings": {
+    "simulate_s": 46.2,
+    "rules_s": 1.44,
+    "ml_s": 10.3,
+    "graph_s": 0.09
+  },
+  "rules": [
+    {
+      "id": "R001",
+      "name": "Credential stuffing from a single IP",
+      "mitre": "T1110.004 Brute Force - Credential Stuffing",
+      "severity": "high",
+      "entity": "ip",
+      "description": "One IP fails logins on many different accounts inside an hour.",
+      "response": "Block the IP for 24 h at the edge and require a CAPTCHA on its next 100 logins.",
+      "false_positives": "Carrier-grade NAT or a shared office egress; mitigated by the 75% failure floor."
+    },
+    {
+      "id": "R002",
+      "name": "Distributed credential stuffing from one network (ASN)",
+      "mitre": "T1110.004 Brute Force - Credential Stuffing",
+      "severity": "high",
+      "entity": "asn",
+      "description": "A botnet rotates IPs to stay under per-IP limits, but its traffic still concentrates in a few networks.",
+      "response": "Step up to CAPTCHA plus email verification for logins from this ASN for 6 h; block the top source IPs.",
+      "false_positives": "A large VPN provider during a regional outage."
+    },
+    {
+      "id": "R003",
+      "name": "Password spraying (one password across many accounts)",
+      "mitre": "T1110.003 Brute Force - Password Spraying",
+      "severity": "high",
+      "entity": "pw_hash",
+      "description": "The same keyed hash of an attempted password fails on many accounts. Only a 12-character keyed hash is logged, never the password.",
+      "response": "Add the hash to the banned-password list, force reset on any account where it succeeded, and block the source IPs.",
+      "false_positives": "None expected; legitimate users do not share passwords across accounts."
+    },
+    {
+      "id": "R004",
+      "name": "Impossible travel on a new device",
+      "mitre": "T1078 Valid Accounts",
+      "severity": "low",
+      "entity": "account_id",
+      "description": "Two successful logins imply faster than 900 km/h travel over 1,000+ km, and the second login uses a device fingerprint the account has never used.",
+      "response": "Revoke active sessions and require re-authentication with the second factor.",
+      "false_positives": "VPN users; suppressed by requiring a never-seen device fingerprint."
+    },
+    {
+      "id": "R005",
+      "name": "Login from new network and device, then account manipulation",
+      "mitre": "T1098 Account Manipulation",
+      "severity": "critical",
+      "entity": "account_id",
+      "description": "A successful login from an ASN and device fingerprint the account has never used is followed within 2 h by an MFA, email or device-pairing change.",
+      "response": "Freeze the account, roll back the MFA and email changes, unpair the new device, and notify the user through the original email.",
+      "false_positives": "A user who buys a new phone while travelling and re-pairs a device the same day."
+    },
+    {
+      "id": "R006",
+      "name": "Cloned device identity",
+      "mitre": "T1036 Masquerading",
+      "severity": "high",
+      "entity": "device_id",
+      "description": "One device serial checks in from two or more networks inside 6 h. Home devices check in from one fixed network.",
+      "response": "Rotate the device credential, quarantine check-ins from the new network, and ask the owner to re-pair.",
+      "false_positives": "A user moving house or an ISP renumbering their block."
+    },
+    {
+      "id": "R007",
+      "name": "Device ID enumeration through the API",
+      "mitre": "T1087 Account Discovery",
+      "severity": "medium",
+      "entity": "account_id",
+      "description": "One account requests many distinct device IDs in 10 minutes and most return 4xx, the signature of walking a sequential ID space.",
+      "response": "Revoke the API token, rate-limit the account to 1 request/s, and switch device IDs to unguessable values.",
+      "false_positives": "A buggy client retry loop; distinct-ID floor of 50 keeps those out."
+    },
+    {
+      "id": "R008",
+      "name": "Signup burst from one device fingerprint",
+      "mitre": "T1585 Establish Accounts",
+      "severity": "medium",
+      "entity": "device_fp",
+      "description": "Five or more new accounts are created from one device fingerprint in 24 h.",
+      "response": "Hold promo payouts for these accounts and require phone verification.",
+      "false_positives": "A family setting up accounts on one shared tablet; usually 2 to 4 accounts."
+    },
+    {
+      "id": "R009",
+      "name": "Spike in failed logins on non-existent usernames",
+      "mitre": "T1110.004 Brute Force - Credential Stuffing",
+      "severity": "medium",
+      "entity": "global",
+      "description": "Leaked combo lists contain usernames the service never had. A rise in failures on unknown usernames, over a trailing 7-day hourly baseline, exposes low-and-slow stuffing that per-IP and per-ASN rules miss.",
+      "response": "Turn on site-wide step-up (CAPTCHA) for logins from never-seen devices until the rate returns to baseline.",
+      "false_positives": "An app release that breaks username normalization."
+    }
+  ]
+}

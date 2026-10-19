@@ -1,0 +1,22 @@
+id: R009
+name: Spike in failed logins on non-existent usernames
+attack: credential_stuffing
+mitre: T1110.004 Brute Force - Credential Stuffing
+severity: medium
+entity: global
+description: Leaked combo lists contain usernames the service never had. A rise in failures on unknown usernames, over a trailing 7-day hourly baseline, exposes low-and-slow stuffing that per-IP and per-ASN rules miss.
+false_positives: An app release that breaks username normalization.
+response: Turn on site-wide step-up (CAPTCHA) for logins from never-seen devices until the rate returns to baseline.
+sql: |
+  WITH u AS (
+    SELECT event_id, ts FROM events
+    WHERE event_type = 'login' AND NOT success AND account_id NOT IN (SELECT account_id FROM accounts)),
+  h AS (SELECT time_bucket(INTERVAL 6 HOUR, ts) AS hr, count(*) AS n, list(event_id) AS ev FROM u GROUP BY 1),
+  b AS (SELECT hr, n, ev,
+               avg(n) OVER (ORDER BY hr RANGE BETWEEN INTERVAL 7 DAY PRECEDING AND INTERVAL 6 HOUR PRECEDING) AS mu,
+               stddev_samp(n) OVER (ORDER BY hr RANGE BETWEEN INTERVAL 7 DAY PRECEDING AND INTERVAL 6 HOUR PRECEDING) AS sd
+        FROM h)
+  SELECT 'global' AS entity, hr AS window_start, hr + INTERVAL 6 HOUR AS window_end, ev AS evidence,
+         (n - mu) / greatest(sd, 1) AS metric,
+         printf('%d unknown-user failures vs baseline %.1f +/- %.1f', n, mu, sd) AS detail
+  FROM b WHERE mu IS NOT NULL AND n >= mu + 4 * greatest(sd, 1) AND n >= 10

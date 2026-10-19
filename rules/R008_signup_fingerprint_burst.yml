@@ -1,0 +1,17 @@
+id: R008
+name: Signup burst from one device fingerprint
+attack: fake_account_ring
+mitre: T1585 Establish Accounts
+severity: medium
+entity: device_fp
+description: Five or more new accounts are created from one device fingerprint in 24 h.
+false_positives: A family setting up accounts on one shared tablet; usually 2 to 4 accounts.
+response: Hold promo payouts for these accounts and require phone verification.
+sql: |
+  SELECT device_fp AS entity, time_bucket(INTERVAL 24 HOUR, ts) AS window_start,
+         time_bucket(INTERVAL 24 HOUR, ts) + INTERVAL 24 HOUR AS window_end,
+         list(event_id) AS evidence, count(*)::DOUBLE AS metric,
+         printf('%d signups from one fingerprint', count(*)) AS detail
+  FROM events WHERE event_type = 'signup'
+  GROUP BY device_fp, time_bucket(INTERVAL 24 HOUR, ts)
+  HAVING count(*) >= 5

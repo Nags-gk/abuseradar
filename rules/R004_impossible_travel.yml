@@ -1,0 +1,24 @@
+id: R004
+name: Impossible travel on a new device
+attack: account_takeover
+mitre: T1078 Valid Accounts
+severity: low
+entity: account_id
+description: Two successful logins imply faster than 900 km/h travel over 1,000+ km, and the second login uses a device fingerprint the account has never used.
+false_positives: VPN users; suppressed by requiring a never-seen device fingerprint.
+response: Revoke active sessions and require re-authentication with the second factor.
+sql: |
+  WITH s AS (
+    SELECT event_id, account_id, ts, lat, lon, device_fp,
+           lag(ts) OVER w AS pts, lag(lat) OVER w AS plat, lag(lon) OVER w AS plon, lag(event_id) OVER w AS pid,
+           count(*) OVER (PARTITION BY account_id, device_fp ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS fp_seen
+    FROM events WHERE event_type = 'login' AND success
+    WINDOW w AS (PARTITION BY account_id ORDER BY ts)),
+  d AS (
+    SELECT *, 2 * 6371 * asin(sqrt(pow(sin(radians(lat - plat) / 2), 2) +
+              cos(radians(plat)) * cos(radians(lat)) * pow(sin(radians(lon - plon) / 2), 2))) AS km,
+           greatest(epoch(ts - pts) / 3600.0, 0.01) AS hrs
+    FROM s WHERE pts IS NOT NULL)
+  SELECT account_id AS entity, pts AS window_start, ts AS window_end, [pid, event_id] AS evidence,
+         km / hrs AS metric, printf('%.0f km in %.1f h (%.0f km/h), new device', km, hrs, km / hrs) AS detail
+  FROM d WHERE km > 1000 AND km / hrs > 900 AND fp_seen = 0

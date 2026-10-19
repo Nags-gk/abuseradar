@@ -1,0 +1,7 @@
+data/
+.git/
+.github/
+web/
+**/__pycache__
+.pytest_cache
+.ruff_cache
