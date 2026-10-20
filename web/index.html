@@ -121,7 +121,7 @@ Promise.all([j('data/eval.json'), j('data/incidents.json'), j('data/hourly.json'
       try { const r = await fetch(`${API}/v1/incidents/${encodeURIComponent(i.incident_id)}/triage`, {method: 'POST'}); const d = await r.json();
         if (!r.ok) throw new Error(d.detail || d.error || r.status);
         document.getElementById('triMsg').textContent = `mode: ${d.mode}${d.cached ? ' (cached)' : ''} · ${d.latency_s}s · tools: ${d.tool_calls.map(t => t[0]).join(', ')}`;
-        document.getElementById('triOut').innerHTML = `<pre>${esc(JSON.stringify(d.result, null, 2))}</pre>` + (d.guard.length ? `<p class="muted">Guard rejected the LLM answer: ${esc(d.guard.join('; '))}</p>` : '');
+        document.getElementById('triOut').innerHTML = `<pre>${esc(JSON.stringify(d.result, null, 2))}</pre>` + (d.guard.length ? `<p class="muted">${d.guard.some(g => g.startsWith('llm error')) ? 'Gemini was unavailable, so this is the rule-based triage. Try again in a minute.' : 'Guard rejected the LLM answer: ' + esc(d.guard.join('; '))}</p>` : '');
       } catch (e) { document.getElementById('triMsg').textContent = 'Triage failed: ' + e.message; b.disabled = false; }
     };
   };

@@ -28,6 +28,7 @@ PLAYBOOK = Path(__file__).resolve().parent.parent / "docs" / "playbooks.md"
 ATTACKS = {"credential_stuffing", "password_spray", "account_takeover", "device_clone",
            "api_enumeration", "fake_account_ring", "benign"}
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
+FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-flash-lite-latest")
 
 
 @dataclass
@@ -225,10 +226,11 @@ def triage(con, incident: dict, index: PlaybookIndex | None = None, api_key: str
                               entity_activity_24h_after=followup, ip_context=ipctx,
                               playbooks=playbooks), default=str)
     answer, problems = {}, []
-    for attempt in range(3):
+    for attempt in range(4):
+        model = MODEL if attempt < 2 else FALLBACK_MODEL  # switch models if the first is overloaded
         try:
             resp = client.models.generate_content(
-                model=MODEL,
+                model=model,
                 contents=f"Triage this incident. Retrieved context:\n{context}",
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM, temperature=0.1,
@@ -241,8 +243,9 @@ def triage(con, incident: dict, index: PlaybookIndex | None = None, api_key: str
             problems = guard(answer, tools.ctx)
             break
         except Exception as e:  # network, quota, malformed JSON
-            if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and attempt < 2:
-                time.sleep(15 * (attempt + 1))
+            transient = any(c in str(e) for c in ("429", "RESOURCE_EXHAUSTED", "503", "UNAVAILABLE", "500", "504"))
+            if transient and attempt < 3:
+                time.sleep(2 * (attempt + 1))
                 continue
             answer, problems = {}, [f"llm error: {type(e).__name__}: {str(e)[:120]}"]
             break

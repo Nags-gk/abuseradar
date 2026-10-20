@@ -209,7 +209,8 @@ def run_triage(incident_id: str, request: Request):
     with st.db_lock:
         out = triage.triage(st.con, inc, st.index)
     out = json.loads(json.dumps(out, default=_clean))
-    st.triage_cache[incident_id] = out
+    if out["mode"] == "llm":  # do not pin a fallback answer; the next click may reach the model
+        st.triage_cache[incident_id] = out
     jlog(event="triage", incident=incident_id, mode=out["mode"], guard=out["guard"], latency_s=out["latency_s"])
     return {**out, "cached": False}
 
