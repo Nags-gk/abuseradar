@@ -27,7 +27,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 PLAYBOOK = Path(__file__).resolve().parent.parent / "docs" / "playbooks.md"
 ATTACKS = {"credential_stuffing", "password_spray", "account_takeover", "device_clone",
            "api_enumeration", "fake_account_ring", "benign"}
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 
 
 @dataclass
