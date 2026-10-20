@@ -1,0 +1,424 @@
+{
+  "model": "gemini-3.1-flash-lite",
+  "incidents": 20,
+  "llm_answers": 20,
+  "guard_rejections": 0,
+  "accuracy_llm_answers": 0.7,
+  "tp_called_tp": 10,
+  "tp_total": 10,
+  "fp_called_benign": 4,
+  "fp_called_needs_review": 0,
+  "fp_total": 10,
+  "median_latency_s": 1.835,
+  "rows": [
+    {
+      "incident": "INC-00427",
+      "truth": "true_positive",
+      "rules": [
+        "R001"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 3.03,
+      "correct": true
+    },
+    {
+      "incident": "INC-00546",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.9,
+      "correct": true
+    },
+    {
+      "incident": "INC-00736",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.91,
+      "correct": true
+    },
+    {
+      "incident": "INC-00777",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 24.39,
+      "correct": true
+    },
+    {
+      "incident": "INC-00465",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.88,
+      "correct": true
+    },
+    {
+      "incident": "INC-00169",
+      "truth": "true_positive",
+      "rules": [
+        "R006"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 2.39,
+      "correct": true
+    },
+    {
+      "incident": "INC-00342",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.79,
+      "correct": true
+    },
+    {
+      "incident": "INC-00553",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.84,
+      "correct": true
+    },
+    {
+      "incident": "INC-00651",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.83,
+      "correct": true
+    },
+    {
+      "incident": "INC-00228",
+      "truth": "true_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.7,
+      "correct": true
+    },
+    {
+      "incident": "INC-00115",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "benign",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.74,
+      "correct": true
+    },
+    {
+      "incident": "INC-00007",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.78,
+      "correct": false
+    },
+    {
+      "incident": "INC-00088",
+      "truth": "false_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 2.11,
+      "correct": false
+    },
+    {
+      "incident": "INC-00113",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "benign",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.67,
+      "correct": true
+    },
+    {
+      "incident": "INC-00096",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.74,
+      "correct": false
+    },
+    {
+      "incident": "INC-00086",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "benign",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.81,
+      "correct": true
+    },
+    {
+      "incident": "INC-00100",
+      "truth": "false_positive",
+      "rules": [
+        "ML1"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.8,
+      "correct": false
+    },
+    {
+      "incident": "INC-00053",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.97,
+      "correct": false
+    },
+    {
+      "incident": "INC-00057",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "true_positive",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.9,
+      "correct": false
+    },
+    {
+      "incident": "INC-00123",
+      "truth": "false_positive",
+      "rules": [
+        "R004"
+      ],
+      "mode": "llm",
+      "verdict": "benign",
+      "guard": [],
+      "tools": [
+        "get_evidence",
+        "entity_history",
+        "entity_followup",
+        "ip_context",
+        "ip_context",
+        "search_playbook",
+        "search_playbook"
+      ],
+      "latency_s": 1.83,
+      "correct": true
+    }
+  ]
+}

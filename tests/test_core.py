@@ -67,3 +67,10 @@ def test_deterministic_triage_passes_its_own_guard():
     tools.get_evidence(10); tools.search_playbook("credential_stuffing")
     assert out["mode"] == "deterministic"
     assert triage.guard(out["result"], tools.ctx) == []
+
+
+def test_guard_rejects_answers_that_skip_the_playbook_or_actions():
+    ctx = triage.Context(seen_events={1})
+    ans = dict(verdict="true_positive", attack="account_takeover", cited_event_ids=[1], actions=[])
+    problems = triage.guard(ans, ctx)
+    assert any("playbook" in p for p in problems) and any("action" in p for p in problems)

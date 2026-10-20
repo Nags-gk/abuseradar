@@ -72,6 +72,14 @@ Per-campaign detail, including what each layer missed:
 | C16 API enumeration | sequential device IDs | R007 | n/a | | 5.8 min |
 | C17 fake-account ring | 6 fingerprints, 10 IPs, 5 days | R008 | n/a | G1 | 324.6 min |
 
+### LLM triage (`results/triage_eval.json`)
+
+Gemini (`gemini-3.1-flash-lite`) triaged 20 pipeline incidents: 10 with attacker evidence and
+10 false positives (mostly travellers caught by impossible travel). It confirmed **10/10** true
+positives and called **4/10** false positives benign, for **70%** accuracy. Median latency was
+1.8 s, and the guard rejected no answers in this run. The model leans toward "true positive", so
+triage output is advisory and never closes an incident by itself.
+
 Rule R004 (impossible travel) has 50% precision: travellers who log in from a new
 phone abroad look the same as an attacker. It is set to low severity, so it opens a
 ticket and does not page.
@@ -92,6 +100,17 @@ ticket and does not page.
 4. **The simulator was not reproducible.** Travellers were drawn from a Python `set`,
    whose order changes with hash randomization, so results shifted between runs. It now
    iterates a sorted list, and a test asserts byte-identical output for a fixed seed.
+
+5. **The first LLM triage run never reached the model.** The SDK deep-copies its tool list,
+   and bound methods dragged the DuckDB connection with them. Every call errored, and the
+   guard fell back to the deterministic answer, so the run measured nothing. Tools are now
+   plain closures.
+6. **A small model skipped its tools and called everything a true positive** (50%
+   accuracy, no false positive recognized). Retrieval is now deterministic: the service
+   fetches evidence, 24 h of history before and after the incident, IP context and
+   playbooks, and the guard requires a retrieved playbook and at least one action. The
+   post-incident window raised accuracy to 70%: travellers do not change MFA or email
+   afterwards, attackers do.
 
 ## Live demo
 

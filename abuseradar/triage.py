@@ -27,7 +27,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 PLAYBOOK = Path(__file__).resolve().parent.parent / "docs" / "playbooks.md"
 ATTACKS = {"credential_stuffing", "password_spray", "account_takeover", "device_clone",
            "api_enumeration", "fake_account_ring", "benign"}
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
 
 
 @dataclass
@@ -68,6 +68,28 @@ class Context:
     calls: list = field(default_factory=list)
 
 
+def as_functions(tools: "Tools") -> list:
+    """Plain closures for the SDK. It deep-copies its config, and bound methods would
+    drag the DuckDB connection (not copyable) along with them."""
+    def get_evidence(limit: int = 25) -> list[dict]:
+        """Return up to `limit` evidence events for the incident (event_id, ts, event_type, account_id, ip, asn_type, country, success, user_agent, device_fp, status)."""
+        return tools.get_evidence(limit)
+
+    def entity_history(hours: int = 24) -> list[dict]:
+        """Return up to 40 events for the incident's account or IP in the `hours` before the incident, to compare against normal behaviour."""
+        return tools.entity_history(hours)
+
+    def ip_context(ip: str) -> dict:
+        """Return network type, country, and how many accounts and failures this IP touched in the whole dataset."""
+        return tools.ip_context(ip)
+
+    def search_playbook(query: str) -> list[dict]:
+        """Search the response playbooks. Returns the best-matching sections with their allowed action IDs."""
+        return tools.search_playbook(query)
+
+    return [get_evidence, entity_history, ip_context, search_playbook]
+
+
 class Tools:
     def __init__(self, con, incident: dict, index: PlaybookIndex):
         self.con, self.inc, self.index, self.ctx = con, incident, index, Context()
@@ -99,6 +121,18 @@ class Tools:
                               WHERE {col} = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC LIMIT 40""",
                           [self.inc["entity"], start - pd.Timedelta(hours=max(1, min(int(hours), 168))), start])
 
+    def entity_followup(self, hours: int = 24) -> list[dict]:
+        """Return up to 40 events for the incident's account or IP in the `hours` after the incident started:
+        account changes (mfa_change, email_change, device_pair) after a risky login separate takeovers from travellers."""
+        self.ctx.calls.append(("entity_followup", hours))
+        col = {"account_id": "account_id", "ip": "ip", "device_id": "device_id"}.get(self.inc["entity_type"])
+        if not col:
+            return []
+        start = pd.Timestamp(self.inc["first_seen"])
+        return self._rows(f"""SELECT event_id, ts, event_type, ip, asn_type, country, success, device_fp FROM events
+                              WHERE {col} = ? AND ts > ? AND ts <= ? ORDER BY ts LIMIT 40""",
+                          [self.inc["entity"], start, start + pd.Timedelta(hours=max(1, min(int(hours), 168)))])
+
     def ip_context(self, ip: str) -> dict:
         """Return network type, country, and how many accounts and failures this IP touched in the whole dataset."""
         self.ctx.calls.append(("ip_context", ip))
@@ -118,7 +152,10 @@ class Tools:
 
 
 SYSTEM = """You are a detection-and-response analyst triaging an abuse incident on a smart-home device cloud.
-Use the tools to look at the evidence, the entity's history and the playbook before answering.
+The evidence, the entity's 24 h before and after the incident, IP context and candidate playbooks are provided;
+call the tools only if you need more. A login from a new place or device alone is weak evidence: takeovers are
+usually followed by account changes (mfa_change, email_change, device_pair), travellers are not. Travellers, VPN users and people with a new phone trigger many of these rules; only
+say true_positive when the history does not explain the activity.
 Rules: cite only event IDs returned by tools; recommend only action IDs from playbook sections you retrieved;
 if the evidence looks like normal behaviour (travel, VPN, new phone) say benign. Reply with JSON only:
 {"verdict": "true_positive|benign|needs_review", "confidence": 0-1, "attack": "<one of credential_stuffing,
@@ -139,6 +176,10 @@ def guard(answer: dict, ctx: Context) -> list[str]:
     if cited - ctx.seen_events:
         problems.append(f"cites events never returned by a tool: {sorted(cited - ctx.seen_events)[:5]}")
     allowed = {a for s in ctx.sections.values() for a in s.actions}
+    if not ctx.sections:
+        problems.append("answered without retrieving a playbook")
+    if not answer.get("actions"):
+        problems.append("no response action recommended")
     bad = set(answer.get("actions", [])) - allowed
     if bad:
         problems.append(f"actions not in retrieved playbooks: {sorted(bad)}")
@@ -171,16 +212,30 @@ def triage(con, incident: dict, index: PlaybookIndex | None = None, api_key: str
     client = genai.Client(api_key=key)
     brief = {k: incident[k] for k in ("incident_id", "entity_type", "entity", "severity", "attacks", "rules", "summary", "alerts")}
     brief["evidence_count"] = len(incident["evidence"])
+    # Retrieval is deterministic: small models often skip tool calls, and the guard can
+    # only check citations against what was actually fetched.
+    evidence = tools.get_evidence(25)
+    history = tools.entity_history(24)
+    followup = tools.entity_followup(24)
+    ips = sorted({e["ip"] for e in evidence if e.get("ip")})[:3]
+    ipctx = {ip: tools.ip_context(ip) for ip in ips}
+    playbooks = [p for a in (incident["attacks"] or ["benign"]) for p in tools.search_playbook(a.replace("_", " "))]
+    playbooks += [p for p in tools.search_playbook("benign traveller VPN new phone") if p not in playbooks]
+    context = json.dumps(dict(incident=brief, evidence=evidence, entity_history_24h_before=history,
+                              entity_activity_24h_after=followup, ip_context=ipctx,
+                              playbooks=playbooks), default=str)
     answer, problems = {}, []
     for attempt in range(3):
         try:
             resp = client.models.generate_content(
                 model=MODEL,
-                contents=f"Triage this incident:\n{json.dumps(brief, default=str)}",
+                contents=f"Triage this incident. Retrieved context:\n{context}",
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM, temperature=0.1,
-                    tools=[tools.get_evidence, tools.entity_history, tools.ip_context, tools.search_playbook],
-                    automatic_function_calling=types.AutomaticFunctionCallingConfig(maximum_remote_calls=8)))
+                    tools=as_functions(tools),
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(maximum_remote_calls=8),
+                    thinking_config=types.ThinkingConfig(thinking_level="low"),  # triage needs speed, not long reasoning
+                    http_options=types.HttpOptions(timeout=90_000)))
             text = resp.text or ""
             answer = json.loads(re.search(r"\{.*\}", text, re.S).group(0))
             problems = guard(answer, tools.ctx)
