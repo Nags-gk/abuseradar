@@ -171,19 +171,26 @@ def triage(con, incident: dict, index: PlaybookIndex | None = None, api_key: str
     client = genai.Client(api_key=key)
     brief = {k: incident[k] for k in ("incident_id", "entity_type", "entity", "severity", "attacks", "rules", "summary", "alerts")}
     brief["evidence_count"] = len(incident["evidence"])
-    try:
-        resp = client.models.generate_content(
-            model=MODEL,
-            contents=f"Triage this incident:\n{json.dumps(brief, default=str)}",
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM, temperature=0.1,
-                tools=[tools.get_evidence, tools.entity_history, tools.ip_context, tools.search_playbook],
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(maximum_remote_calls=8)))
-        text = resp.text or ""
-        answer = json.loads(re.search(r"\{.*\}", text, re.S).group(0))
-        problems = guard(answer, tools.ctx)
-    except Exception as e:  # network, quota, malformed JSON
-        answer, problems = {}, [f"llm error: {type(e).__name__}: {str(e)[:120]}"]
+    answer, problems = {}, []
+    for attempt in range(3):
+        try:
+            resp = client.models.generate_content(
+                model=MODEL,
+                contents=f"Triage this incident:\n{json.dumps(brief, default=str)}",
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM, temperature=0.1,
+                    tools=[tools.get_evidence, tools.entity_history, tools.ip_context, tools.search_playbook],
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(maximum_remote_calls=8)))
+            text = resp.text or ""
+            answer = json.loads(re.search(r"\{.*\}", text, re.S).group(0))
+            problems = guard(answer, tools.ctx)
+            break
+        except Exception as e:  # network, quota, malformed JSON
+            if ("429" in str(e) or "RESOURCE_EXHAUSTED" in str(e)) and attempt < 2:
+                time.sleep(15 * (attempt + 1))
+                continue
+            answer, problems = {}, [f"llm error: {type(e).__name__}: {str(e)[:120]}"]
+            break
     if problems:
         fallback = deterministic(incident, tools)
         return dict(result=fallback, mode="fallback", guard=problems, rejected=answer,
