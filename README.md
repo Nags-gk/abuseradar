@@ -5,7 +5,7 @@ SQL detections, a LightGBM login-risk model, graph detection for fake-account ri
 alert-to-incident fusion, and Gemini incident triage behind a grounding guard, all
 scored against labeled attack campaigns held out from training.
 
-**Dashboard: https://nags-gk.github.io/abuseradar/** · **API:** see [Live demo](#live-demo) ·
+**Dashboard: https://nags-gk.github.io/abuseradar/** · **API: https://abuseradar-168677209514.us-central1.run.app** ([OpenAPI](https://abuseradar-168677209514.us-central1.run.app/docs)) ·
 [Threat model](docs/threat-model.md) · [Detection catalog](docs/detections.md)
 
 [![CI](https://github.com/Nags-gk/abuseradar/actions/workflows/ci.yml/badge.svg)](https://github.com/Nags-gk/abuseradar/actions/workflows/ci.yml)
@@ -114,8 +114,9 @@ ticket and does not page.
 
 ## Live demo
 
-The dashboard on GitHub Pages replays the evaluation. The API runs on Google Cloud
-Run; open it from the dashboard with `?api=<url>`, or call it directly:
+The dashboard on GitHub Pages replays the evaluation, and its **Run AI triage** button calls the live API on
+Google Cloud Run (https://abuseradar-168677209514.us-central1.run.app, us-central1, max 1 instance, $5 budget alert, Gemini key in Secret Manager
+behind a dedicated service account). Call it directly:
 
 | Method | Path | |
 |---|---|---|
@@ -127,7 +128,7 @@ Run; open it from the dashboard with `?api=<url>`, or call it directly:
 | GET | `/docs` | OpenAPI |
 
 ```bash
-curl -s "$API/v1/score" -H 'Content-Type: application/json' -d '{"events":[{"ts":"2026-09-21T23:00:00Z",
+curl -s "https://abuseradar-168677209514.us-central1.run.app/v1/score" -H 'Content-Type: application/json' -d '{"events":[{"ts":"2026-09-21T23:00:00Z",
   "account_id":"u1","ip":"203.0.113.9","asn":64600,"asn_type":"hosting","country":"NL","lat":52.1,"lon":5.3,
   "device_fp":"fpx","user_agent":"python-requests/2.32","success":false,"pw_hash":"0a1b2c3d4e5f"}]}'
 ```
